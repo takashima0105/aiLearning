@@ -1,0 +1,44 @@
+{% extends "airun/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}学習データの確認{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <h4 class="mt-1 border-bottom">アップロードファイルの確認</h4>
+        </div>
+    </div>
+    {% for field in form %}
+    <div class="mb-4 row align-items-center bg-info">
+        <div class="col-auto col-form-label-lg">
+            <label class="border-bottom" for="{{ field.id_for_label }}">{{ field.label_tag }}<label>
+            {{ field.value }}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% comment %} <div class="mb-4 row align-items-center bg-info">
+        <div class="col-auto col-form-label-lg">
+            <label class="border-bottom">{{  }}<label>
+        </div>
+    </div> {% endcomment %}
+
+    <div class="row">
+        <div class="col-1">
+            <form action="{% url 'airun:DataUpload' %}" method="POST">
+                <button type="submit" class="btn-sm btn-danger">戻る</button>
+                {% csrf_token %}
+            </form>
+        </div>
+        <div class="col-2">
+            <form action="" method="POST">
+                <button type="submit" class="btn-sm btn-info">実行</button>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
