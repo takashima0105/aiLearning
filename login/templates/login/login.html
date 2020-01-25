@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+{% extends "login/base.html" %}
 {% load static %}
 {% load widget_tweaks %}
-{% bootstrap_css %}
-
-<html lang="jp" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>ログイン</title>
-    </head>
-    <body>
-        <div class="container">
-            <div class="display-3 text-center">AILearning</div>
-            <div class="text-center">ログイン</div>
-            <button type="button" class="btn btn-primary btn-lg btn-block" >Googleアカウントでログイン</button>
-            <button type="button" class="btn btn-primary btn-lg btn-block" >Twitterアカウントでログイン</button>
+{% block title %}ログイン{% endblock title %}
+{% block content %}
+<div class="cntainer mt-5">
+    <div class="row justify-content-center">
+        <div class = "col-6" style="background:whitesmoke">
+            <div class="display-1 text-center mb-5">AILearning</div>
+            <div>
+                <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-warning mb-5 mx-md-auto">Googleアカウントでログイン</a>
+            </div>
+            <div>
+                <button type="button" class="btn mb-5 mx-auto btn-primary btn-lg btn-block" >Twitterアカウントでログイン</button>
+            </div> 
         </div>
-    </body>
-</html>
+    </div>
+</div>
+{% endblock content %}

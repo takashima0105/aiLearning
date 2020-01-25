@@ -5,7 +5,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    #ログイン画面
-    path('login',views.Login, name="login"),
+    path('',views.Login, name="login"),
+    path('auth/', include('social_django.urls', namespace='social')), # move to oauth athuentication
 ]
 

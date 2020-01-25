@@ -3,9 +3,11 @@ from django.shortcuts import render
 from .forms import UploadFileForm
 from django.http import HttpResponse
 import sys
+from django.contrib.auth.decorators import login_required#if no athuentication, execute redirect
 
 # ------------------------------------------------------------------
 #学習実効画面の表示
+@login_required #if no athuentication, execute redirect
 def airun_display(request):
     form = UploadFileForm()
     return render(request, 'airun/airun.html', {"form": form })
