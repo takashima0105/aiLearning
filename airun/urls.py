@@ -5,9 +5,12 @@ from django.urls import path, include
 from . import views
 
 app_name = 'airun'
+
 urlpatterns = [
     #実効画面
-    path('airun/', views.airun_display, name='airun_display')
+    path('main/', views.DataUpload.as_view(), name='DataUpload'),
+    path('verification/<int:pk>/', views.DataVerification.as_view(), name='DataVerification')
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
