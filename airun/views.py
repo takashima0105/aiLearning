@@ -6,26 +6,14 @@ from .models import TeacherData
 from django.urls import reverse
 from .learning import Prediction
 import sys
-<<<<<<< HEAD:airun2/views.py
 from django.contrib.auth.decorators import login_required#if no athuentication, execute redirect
-
-# ------------------------------------------------------------------
-#学習実効画面の表示
-@login_required #if no athuentication, execute redirect to /login/
-def airun_display(request):
-    form = UploadFileForm()
-    return render(request, 'airun/airun.html', {"form": form })
-# ------------------------------------------------------------------
-#ファイルアップロード処理
-def file_upload(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-=======
 import os
 
 # ------------------------------------------------------------------------------------
 #学習実効画面の表示 & ファイルアップロード処理
 class DataUpload(generic.FormView):
+
+    @login_required #if no athuentication, execute redirect to /login/
     template_name = 'airun/main.html'
     form_class = TeacherDataForm
 
@@ -36,8 +24,6 @@ class DataUpload(generic.FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES or None)
-        
->>>>>>> 5c59b7a1908100ddd8abcfb246253dce89ebc360:airun/views.py
         if form.is_valid():
             for file in form.files:
                 root, ext = os.path.splitext(form.files[file].name)
