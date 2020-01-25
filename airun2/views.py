@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required#if no athuentication, 
 
 # ------------------------------------------------------------------
 #学習実効画面の表示
-@login_required #if no athuentication, execute redirect
+@login_required #if no athuentication, execute redirect to /login/
 def airun_display(request):
     form = UploadFileForm()
     return render(request, 'airun/airun.html', {"form": form })
