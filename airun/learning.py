@@ -29,9 +29,9 @@ class Method():
         self.epoch = epoch
 
         #MODEL保存用パス
-        self.MODELDIR = './aiLearning/result/model'
+        self.MODELDIR = './aiLearning/media/model'
         #WEIGHT保存パス
-        self.WEIGHTDIR = './aiLearning/result/weight'
+        self.WEIGHTDIR = './aiLearning/media/weight'
 
     def create_datasets_and_labels(self, test_size):
         #DataSetの読み込み

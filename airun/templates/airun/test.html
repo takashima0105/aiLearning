@@ -1,0 +1,50 @@
+{% extends "airun/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}学習実効画面{% endblock title %}
+{% block content %}
+
+<div class="container">
+  <div class="row align-items-center" style="height:100px">
+    <div class="col-auto">
+      <h2 class="mt-1 border-bottom">回帰問題の学習</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-auto">
+      <h4 class="mt-2 border-bottom">学習データの選択</h4>
+    </div>
+  </div>
+</div>
+<form method="POST" enctype="multipart/form-data" action="{% url 'airun:DataUpload' %}">
+  <div class="row mb-3">
+    <div class="col-auto card-body alert alert-info alert-dismissible">
+      <strong>{{ json }}</strong>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-auto card-body alert alert-info alert-dismissible">
+      <strong>{{ weight }}</strong>
+    </div>
+  </div>
+  <div class="col-6">
+    <h4 class="mt-4 border-bottom">予測材料</h4>
+    {% csrf_token %}
+    {{ form.test |add_class:'w-100 btn-sm btn-info' }}
+  </div>
+  <div class="col-6">
+    {% csrf_token %}
+    <label class="border-bottom"> {{ form.json }}</label>
+  </div> 
+  <div class="col-6">
+    {% csrf_token %}
+    <label class="border-bottom"> {{ form.weight }}</label>
+  </div>
+  <div class="row mb-3">
+    <div class="col-2">
+      <button type="submit" class="btn-sm btn-dark">実行</button>
+    </div>
+  </div>
+</form>
+
+{% endblock content %}
