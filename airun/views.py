@@ -1,8 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic
-from .forms import TeacherDataForm
-from .models import TeacherData
+from .forms import TeacherDataForm, UploadDataForm
 from django.urls import reverse
 from .learning import Prediction
 import sys
@@ -13,9 +12,9 @@ import os
 #学習実効画面の表示 & ファイルアップロード処理
 class DataUpload(generic.FormView):
 
-    @login_required #if no athuentication, execute redirect to /login/
     template_name = 'airun/main.html'
     form_class = TeacherDataForm
+    pathform_class = UploadDataForm
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -34,10 +33,15 @@ class DataUpload(generic.FormView):
                     return render(request, self.template_name, contexts)
 
             obj = form.save()
-            predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
-            predict.main()
+            pathform = self.pathform_class(initial={
+                'epoch':100,
+                'inputFilePath':obj[0],
+                'outputFilePath':obj[1]
+            })
+            # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
+            # predict.main()
 
-            contexts = {'form':form}
+            contexts = {'form':pathform, 'obj':obj}
             return render(request, self.template_name, contexts)
 # ------------------------------------------------------------------------------------
 
@@ -60,6 +64,5 @@ class DataVerification(generic.DetailView):
             return render(request, self.main_name, contexts)
 # ------------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------------
 
 # Create your views here.

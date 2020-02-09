@@ -15,9 +15,6 @@ import pathlib
 
 MODEL_FILE = 'model.json'
 WEIGHT_FILE = 'weights.hdf5'
-HISTORY_FILE = 'history.csv'
-GRAPH1_FILE = 'history.png'
-GRAPH2_FILE = 'prediction.png'
 LOG_DIR = './log'
 
 BATCH_SIZE = 10
@@ -35,13 +32,20 @@ class Method():
 
     def create_datasets_and_labels(self, test_size):
         #DataSetの読み込み
-        originalData = np.loadtxt(self.inputDataPath,               # 読み込みたいファイルのパス
+        inputData = np.loadtxt(self.inputDataPath,               # 読み込みたいファイルのパス
                                 delimiter=",",                      # ファイルの区切り文字
                                 skiprows=0,                         # 先頭の何行を無視するか（指定した行数までは読み込まない）
                                 dtype=np.float32
                                 )
+        
+        outputData = np.loadtxt(self.outputDataPath,               # 読み込みたいファイルのパス
+                        delimiter=",",                      # ファイルの区切り文字
+                        skiprows=0,                         # 先頭の何行を無視するか（指定した行数までは読み込まない）
+                        dtype=np.float32
+                        )
 
         # #データをランダムに並び替える
+        originalData = np.c_[outputData, inputData]
         originalData = np.random.permutation(originalData)
 
         inputData = originalData[:,1:]
