@@ -16,21 +16,16 @@
     </div>
   </div>
 </div>
-<form method="POST" enctype="multipart/form-data" action="{% url 'airun:DataUpload' %}">
-  <div class="row mb-3">
-    <div class="col-auto card-body alert alert-info alert-dismissible">
-      <strong>{{ json }}</strong>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-auto card-body alert alert-info alert-dismissible">
-      <strong>{{ weight }}</strong>
-    </div>
+<form method="POST" enctype="multipart/form-data" action = "{% url 'airun:TestStart' %}">
+  <div class="col-6">
+    <h4 class="mt-4 border-bottom">予測材料</h4>
+    {% csrf_token %}
+    {{ form.testdata |add_class:'w-100 btn-sm btn-info' }}
   </div>
   <div class="col-6">
     <h4 class="mt-4 border-bottom">予測材料</h4>
     {% csrf_token %}
-    {{ form.test |add_class:'w-100 btn-sm btn-info' }}
+    {{ form.resultdata |add_class:'w-100 btn-sm btn-info' }}
   </div>
   <div class="col-6">
     {% csrf_token %}

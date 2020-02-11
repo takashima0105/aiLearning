@@ -9,6 +9,7 @@ import sys
 from django.contrib.auth.decorators import login_required#if no athuentication, execute redirect
 import os
 from .forms import AIPredictForm
+from .prediction import Predict
 
 # ------------------------------------------------------------------------------------
 #学習実効画面の表示 & ファイルアップロード処理
@@ -17,6 +18,7 @@ class DataUpload(generic.FormView):
     template_name = 'airun/main.html'
     test_name = 'airun/test.html'
     form_class = TeacherDataForm
+    
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -25,6 +27,7 @@ class DataUpload(generic.FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES or None)
+        next_form = AIPredictForm
         if form.is_valid():
             for file in form.files:
                 root, ext = os.path.splitext(form.files[file].name)
@@ -37,11 +40,12 @@ class DataUpload(generic.FormView):
             obj = form.save()
             predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
             aimodel = predict.main()
-            json = str(aimodel[0])
-            weight = str(aimodel[1])
-
-            contexts = {'json':json, 'weight':weight}
-            return render(request, self.test_name, contexts)
+            json = os.path.abspath(aimodel[0])
+            weight = os.path.abspath(aimodel[1])
+            formset = next_form(initial=self.initial)
+            formset.initial = {'json': json, 'weight': weight}
+            contexts = {'form':formset}
+            return render(request, self.test_name,contexts)
 # ------------------------------------------------------------------------------------
 
 #アップロードファイルの確認
@@ -64,15 +68,25 @@ class DataVerification(generic.DetailView):
 # ------------------------------------------------------------------------------------
 #予測テスト
 class TestStart(generic.FormView):
-    form = AIPredictForm
+    form_data = AIPredictForm
+    page = 'airun/test.html'
 
     def post(self, request, *args, **kwargs):
-        if form.is_valid():
-            root, ext = os.path.splitext(form.files.name)
+        form = self.form_data(request.POST, request.FILES or None)
+        # for file in form.files:
+        #         root, ext = os.path.splitext(form.files[file].name)
+        #         if ext != '.csv':
+        #             message = 'csvファイルをアップロードしてください。'
+        #             form = self.form_data(initial=self.initial)
+        #             contexts = {'form':form, 'message':message}
+        #             return render(request, self.template_name, contexts)
         
-    obj = form.save()
-    test = predict(obj.testdata.path, obj.resultdata.path, obj.jsonfile, obj.weightfile)
-    result = test.run()
+        obj = form
+        test = Predict(obj.testdata, obj.resultdata, obj.json, obj.weight)
+        result = test.run()
+        contexts = {'fomm':result}
+
+        return render(request, self.page, contexts)
     
 
 

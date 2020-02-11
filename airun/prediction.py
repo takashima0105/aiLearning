@@ -1,6 +1,6 @@
 
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from keras.models import model_from_json
 import tensorflow as tf
 import os
@@ -15,9 +15,9 @@ PREDICT_FILE = 'predict.png'
 
 class Predict():
 
-    def __init__(self,testDataPath,resultDataPath,jsonfile,weightfile):
-        self.testData = testDataPath
-        self.resultData = resultDataPath
+    def __init__(self,testData,resultData,jsonfile,weightfile):
+        self.testData = testData
+        self.resultData = resultData
         self.jsonfile = jsonfile
         self.weightfile = weightfile
 
@@ -65,11 +65,11 @@ class Predict():
         pred_y = model.predict(data[0])
 
         # 二乗平方根で誤差を算出
-        mse = mean_squared_error(data{1}, pred_y)
+        mse = mean_squared_error(data[1], pred_y)
 
         # 可視化
         df = pd.DataFrame(pred_y, columns=['pred'])
-        df['act'] = pd.DataFrame(data{1})
+        df['act'] = pd.DataFrame(data[1])
         fig, ax = plt.subplots(figsize=(15,4))
         ax.plot(df['pred'], label='pred')
         ax.plot(df['act'], label='act')

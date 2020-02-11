@@ -7,5 +7,8 @@ class TeacherDataForm(forms.ModelForm):
         fields = ('epoch', 'inputFile', 'outputFile', )
  
 class AIPredictForm(forms.Form):
-    fields = ('testdata', 'resultdata','json','weight')
+    testdata = forms.FileField()
+    resultdata = forms.FileField()
+    json = forms.CharField(label='json')
+    weight = forms.CharField(label='weight')
          
