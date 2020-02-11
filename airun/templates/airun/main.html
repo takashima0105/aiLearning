@@ -60,6 +60,12 @@
 
 {% if obj %}
 <div class="row">
+  <div class="col-auto">
+    <h5 class="border-bottom">特徴量選択：</h5>
+    {{ choice }}
+  </div>
+</div>
+<div class="row">
   <div style="width: 50%">
     <canvas id="chart" height="300" width="600"></canvas>
   </div>

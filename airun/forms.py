@@ -2,6 +2,7 @@ from django import forms
 from django.core.files.storage import default_storage
 import os
 
+
 class TeacherDataForm(forms.Form):
     inputFile = forms.FileField()
     outputFile = forms.FileField()
@@ -18,3 +19,7 @@ class UploadDataForm(forms.Form):
     epoch = forms.IntegerField(max_value=10000, min_value=1)
     inputFilePath = forms.CharField()
     outputFilePath = forms.CharField()
+
+
+class ChoiceForm(forms.Form):
+    index = forms.ChoiceField()

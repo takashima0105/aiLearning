@@ -1,9 +1,10 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic
-from .forms import TeacherDataForm, UploadDataForm
+from .forms import TeacherDataForm, UploadDataForm, ChoiceForm
 from django.urls import reverse
 from .learning import Prediction
+from .graghcreate import GraphCreate
 import sys
 from django.contrib.auth.decorators import login_required#if no athuentication, execute redirect
 import os
@@ -15,6 +16,7 @@ class DataUpload(generic.FormView):
     template_name = 'airun/main.html'
     form_class = TeacherDataForm
     pathform_class = UploadDataForm
+    choice_class = ChoiceForm
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -38,10 +40,15 @@ class DataUpload(generic.FormView):
                 'inputFilePath':obj[0],
                 'outputFilePath':obj[1]
             })
+            gc = GraphCreate(obj[0], obj[1])
+            List = gc.Create()
+
+            choice = self.choice_class()
+            choice.fields['index'].choices = List
             # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
             # predict.main()
 
-            contexts = {'form':pathform, 'obj':obj}
+            contexts = {'form':pathform, 'obj':obj , 'choice':choice}
             return render(request, self.template_name, contexts)
 # ------------------------------------------------------------------------------------
 
