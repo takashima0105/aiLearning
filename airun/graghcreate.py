@@ -1,5 +1,5 @@
 import numpy as np
-from django.core.files.storage import ds
+from django.core.files.storage import default_storage as ds
 import plotly.offline as plt   # オフライン用
 import plotly.graph_objs as go
 import os.path as path

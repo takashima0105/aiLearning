@@ -8,12 +8,15 @@ from .graghcreate import GraphCreate
 import sys
 from django.contrib.auth.decorators import login_required#if no athuentication, execute redirect
 import os
+from .forms import AIPredictForm
+from .prediction import Predict
 
 # ------------------------------------------------------------------------------------
 #学習実効画面の表示 & ファイルアップロード処理
 class DataUpload(generic.FormView):
 
     template_name = 'airun/main.html'
+    test_name = 'airun/test.html'
     form_class = TeacherDataForm
     pathform_class = UploadDataForm
     choice_class = ChoiceForm
@@ -25,6 +28,7 @@ class DataUpload(generic.FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES or None)
+        next_form = AIPredictForm
         if form.is_valid():
             for file in form.files:
                 root, ext = os.path.splitext(form.files[file].name)
@@ -50,6 +54,14 @@ class DataUpload(generic.FormView):
 
             contexts = {'form':pathform, 'obj':obj , 'choice':choice}
             return render(request, self.template_name, contexts)
+            # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
+            # aimodel = predict.main()
+            # json = os.path.abspath(aimodel[0])
+            # weight = os.path.abspath(aimodel[1])
+            # formset = next_form(initial=self.initial)
+            # formset.initial = {'json': json, 'weight': weight}
+            # contexts = {'form':formset}
+            # return render(request, self.test_name,contexts)
 # ------------------------------------------------------------------------------------
 
 #アップロードファイルの確認
@@ -70,6 +82,26 @@ class DataVerification(generic.DetailView):
             contexts = {'inputtext':inputtext, 'outputtext':outputtext, 'form':form}
             return render(request, self.main_name, contexts)
 # ------------------------------------------------------------------------------------
+#予測テスト
+class TestStart(generic.FormView):
+    form_data = AIPredictForm
+    page = 'airun/test.html'
 
+    def post(self, request, *args, **kwargs):
+        form = self.form_data(request.POST, request.FILES or None)
+        # for file in form.files:
+        #         root, ext = os.path.splitext(form.files[file].name)
+        #         if ext != '.csv':
+        #             message = 'csvファイルをアップロードしてください。'
+        #             form = self.form_data(initial=self.initial)
+        #             contexts = {'form':form, 'message':message}
+        #             return render(request, self.template_name, contexts)
+        
+        obj = form
+        test = Predict(obj.testdata, obj.resultdata, obj.json, obj.weight)
+        result = test.run()
+        contexts = {'fomm':result}
 
+        return render(request, self.page, contexts)
+    
 # Create your views here.

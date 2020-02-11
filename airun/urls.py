@@ -9,7 +9,7 @@ app_name = 'airun'
 urlpatterns = [
     #実効画面
     path('main/', views.DataUpload.as_view(), name='DataUpload'),
-    path('verification/<int:pk>/', views.DataVerification.as_view(), name='DataVerification')
+    path('test/', views.TestStart.as_view(), name='TestStart')
 ]
 
 if settings.DEBUG:
