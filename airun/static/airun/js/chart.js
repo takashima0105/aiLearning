@@ -1,35 +1,53 @@
-function csv2Array(str) {
-    var csvData = [];
-    var lines = str.split("\n");
-    for (var i = 0; i < lines.length; ++i) {
-        var cells = lines[i].split(",");
-        csvData.push(cells);
+function displayResize() {
+    // var main_container = document.getElementById('content' + id).getElementsByClassName('svg-container')
+    // var all_container = document.getElementsByClassName('main-svg');
+    // var max_width = 0;
+    // var max_height = 0;
+
+    // Array.prototype.forEach.call(all_container, function(item) {
+    //     if (max_width < item.width.baseVal.value) { max_width = item.width.baseVal.value; }
+    //     if (max_height < item.height.baseVal.value) { max_height = item.height.baseVal.value; }
+    // });
+
+    // Array.prototype.forEach.call(main_container, function(item) {
+    //     item.style.width = max_width + 'px';
+    //     item.style.height = max_height + 'px';
+    // });
+    // svg_container.style.height = content_height + 'px';
+    // Plotly.Plots.resize(gd);
+
+    // var main_container = document.getElementById('content' + id).getElementsByClassName('svg-container')
+    // var all_container = document.getElementsByClassName('main-svg');
+    // var max_width = 0;
+    // var max_height = 0;
+
+    // Array.prototype.forEach.call(all_container, function(item) {
+    //     if (max_width < item.width.baseVal.value) { max_width = item.width.baseVal.value; }
+    //     if (max_height < item.height.baseVal.value) { max_height = item.height.baseVal.value; }
+    // });
+
+    var max_width = window.innerWidth;
+
+    var graphDiv = document.getElementsByClassName('plotly-graph-div');
+
+    Array.prototype.forEach.call(graphDiv, function(div) {
+        Plotly.relayout(div, {
+            width: max_width - 150,
+        });
+    });
+
+}
+
+$(window).load(function() {
+    displayResize();
+});
+
+var timer = false;
+$(window).resize(function() {
+    if (timer !== false) {
+        clearTimeout(timer);
     }
-    return csvData;
-}
-
-window.onload = function() {
-    var grhc = document.getElementById("chart").getContext("2d");
-    var fp = document.getElementById("id_outputFilePath")
-    graphdisplay(fp);
-};
-
-function graphdisplay() {
-
-}
-
-function main() {
-    // 1) ajaxでCSVファイルをロード
-    var req = new XMLHttpRequest();
-    var filePath = 'media/outputs/output.csv';
-    req.open("GET", filePath, true);
-    req.onload = function() {
-        // 2) CSVデータ変換の呼び出し
-        data = csv2Array(req.responseText);
-        // 3) chart.jsデータ準備、4) chart.js描画の呼び出し
-        drawBarChart(data);
-    }
-    req.send(null);
-}
-
-main();
+    timer = setTimeout(function() {
+        displayResize();
+    }, 200);
+});

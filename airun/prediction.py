@@ -24,13 +24,13 @@ class Predict():
     def dataset(self):
         #DataSetの読み込み
 
-        TestData = np.loadtxt(os.getcwd() + testDataPath,        # 読み込みたいファイルのパス
+        TestData = np.loadtxt(os.getcwd() + self.testData,        # 読み込みたいファイルのパス
                                 delimiter=",",                      # ファイルの区切り文字
                                 skiprows=0,                         # 先頭の何行を無視するか（指定した行数までは読み込まない）
                                 dtype=np.float32
                                 )
         
-        ResultData = np.loadtxt(os.getcwd() + resultDataPath,        # 読み込みたいファイルのパス
+        ResultData = np.loadtxt(os.getcwd() + self.resultData,        # 読み込みたいファイルのパス
                                 delimiter=",",                      # ファイルの区切り文字
                                 skiprows=0,                         # 先頭の何行を無視するか（指定した行数までは読み込まない）
                                 dtype=np.float32

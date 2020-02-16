@@ -5,7 +5,7 @@
 {% block content %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-<script src="{% static 'airun/js/mychart.js' %}"></script>
+<script src="{% static 'airun/js/chart.js' %}"></script>
 
 <div class="container">
   <div class="row align-items-center" style="height:100px">
@@ -59,15 +59,40 @@
 {% endif %}
 
 {% if obj %}
-<div class="row">
-  <div class="col-auto">
-    <h5 class="border-bottom">特徴量選択：</h5>
-    {{ choice }}
+<div class "container">
+  <div class="row-auto">
+    <ul class="nav nav-pills">
+      {% for i in indexs %}
+        {% if forloop.counter == 1  %}
+          <li class="nav-item">
+            <button type="button" class="nav-link active" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <button type="button" class="nav-link" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+          </li>
+        {% endif %}    
+      {% endfor %}
+    </ul>
   </div>
-</div>
-<div class="row">
-  <div style="width: 50%">
-    <canvas id="chart" height="300" width="600"></canvas>
+  <div class="row-auto">
+    <div class="col-12">
+      {% autoescape off %}
+        <div class="tab-content" id="graphcontent">
+          {% for s in scripts %}
+            {% if forloop.counter == 1  %}
+              <div class="tab-pane fade show active" id="content{{ forloop.counter }}">
+                {{ s }}
+              </div>
+            {% else %}
+              <div class="tab-pane fade" id="content{{ forloop.counter }}">
+                {{ s }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endautoescape %}
+    </div>
   </div>
 </div>
 

@@ -18,9 +18,6 @@ class UploadDataForm(forms.Form):
     inputFilePath = forms.CharField()
     outputFilePath = forms.CharField()
 
-class ChoiceForm(forms.Form):
-    index = forms.ChoiceField()
- 
 class AIPredictForm(forms.Form):
     testdata = forms.FileField()
     resultdata = forms.FileField()

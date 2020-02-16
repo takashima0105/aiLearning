@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic
-from .forms import TeacherDataForm, UploadDataForm, ChoiceForm
+from .forms import TeacherDataForm, UploadDataForm
 from django.urls import reverse
 from .learning import Prediction
 from .graghcreate import GraphCreate
@@ -19,7 +19,6 @@ class DataUpload(generic.FormView):
     test_name = 'airun/test.html'
     form_class = TeacherDataForm
     pathform_class = UploadDataForm
-    choice_class = ChoiceForm
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -45,14 +44,9 @@ class DataUpload(generic.FormView):
                 'outputFilePath':obj[1]
             })
             gc = GraphCreate(obj[0], obj[1])
-            List = gc.Create()
+            indexs, scripts = gc.Create()
 
-            choice = self.choice_class()
-            choice.fields['index'].choices = List
-            # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
-            # predict.main()
-
-            contexts = {'form':pathform, 'obj':obj , 'choice':choice}
+            contexts = {'form':pathform, 'obj':obj , 'indexs':indexs, 'scripts':scripts}
             return render(request, self.template_name, contexts)
             # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
             # aimodel = predict.main()

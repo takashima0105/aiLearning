@@ -25,6 +25,7 @@ class GraphCreate():
                                 )
 
         indexList = []
+        scriptlist = []
         for index in range(inputData.shape[1]):
 
             trace = go.Scatter(
@@ -38,6 +39,7 @@ class GraphCreate():
                         title='ThisTeacherDataGraph',
                         xaxis=dict(title=('FitureValue-' + str(index))),
                         yaxis=dict(title='OutputValue'),
+                        height=450,
                         showlegend=True)
 
             data = [trace]
@@ -45,7 +47,6 @@ class GraphCreate():
             indexList.append((index, '特徴量：' + str(index)))
 
             # オフラインでプロット
-            plt.plot(fig, filename='TeacherData_Value' + str(index) +
-                     '.html', auto_open=True)
+            scriptlist.append(plt.plot(fig, output_type='div'))
 
-        return indexList
+        return indexList, scriptlist
