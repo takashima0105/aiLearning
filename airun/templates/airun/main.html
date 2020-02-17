@@ -59,42 +59,36 @@
 {% endif %}
 
 {% if obj %}
-<div class "container">
-  <div class="row-auto">
-    <ul class="nav nav-pills">
-      {% for i in indexs %}
-        {% if forloop.counter == 1  %}
-          <li class="nav-item">
-            <button type="button" class="nav-link active" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <button type="button" class="nav-link" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
-          </li>
-        {% endif %}    
-      {% endfor %}
-    </ul>
-  </div>
-  <div class="row-auto">
-    <div class="col-12">
-      {% autoescape off %}
-        <div class="tab-content" id="graphcontent">
-          {% for s in scripts %}
-            {% if forloop.counter == 1  %}
-              <div class="tab-pane fade show active" id="content{{ forloop.counter }}">
-                {{ s }}
-              </div>
-            {% else %}
-              <div class="tab-pane fade" id="content{{ forloop.counter }}">
-                {{ s }}
-              </div>
-            {% endif %}
-          {% endfor %}
+
+<ul class="nav nav-pills">
+  {% for i in indexs %}
+    {% if forloop.counter == 1  %}
+      <li class="nav-item">
+        <button type="button" class="nav-link active" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <button type="button" class="nav-link" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+      </li>
+    {% endif %}    
+  {% endfor %}
+</ul>
+{% autoescape off %}
+  <div class="tab-content" id="graphcontent">
+    {% for s in scripts %}
+      {% if forloop.counter == 1  %}
+        <div class="tab-pane fade show active" id="content{{ forloop.counter }}">
+          {{ s }}
         </div>
-      {% endautoescape %}
-    </div>
+      {% else %}
+        <div class="tab-pane fade" id="content{{ forloop.counter }}">
+          {{ s }}
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
-</div>
+{% endautoescape %}
+
 
 <form method="POST" enctype="multipart/form-data" action="">
   {% csrf_token %}

@@ -26,13 +26,19 @@ function displayResize() {
     //     if (max_height < item.height.baseVal.value) { max_height = item.height.baseVal.value; }
     // });
 
-    var max_width = window.innerWidth;
+    var max_width = window.innerWidth - 250;
 
     var graphDiv = document.getElementsByClassName('plotly-graph-div');
 
+    var svg_container = document.getElementsByClassName('svg-container');
+
+    Array.prototype.forEach.call(svg_container, function(svg) {
+        svg.style.width = max_width;
+    });
+
     Array.prototype.forEach.call(graphDiv, function(div) {
         Plotly.relayout(div, {
-            width: max_width - 150,
+            width: max_width,
         });
     });
 
