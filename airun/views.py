@@ -84,6 +84,7 @@ class TestStart(generic.FormView):
         #             form = self.form_class(initial=self.initial)
         #             contexts = {'form':form, 'message':message}
         #             return render(request, self.template_name, contexts)
+
         contexts = {'inputData':request.POST['inputFilePath'],
                     'outputData':request.POST['outputFilePath'],
                     'epoch':request.POST['epoch'],
@@ -93,19 +94,19 @@ class TestStart(generic.FormView):
                     'testSize':request.POST['testSize']}
 
         predict = Prediction(contexts)
-        aimodel = predict.main()
-        json = os.path.abspath(aimodel[0])
-        weight = os.path.abspath(aimodel[1])
-        test = Predict(request.POST['inputFilePath'], request.POST['outputFilePath'], json, weight)
-        result = test.run()
+        # aimodel = predict.main()
+        # json = os.path.abspath(aimodel[0])
+        # weight = os.path.abspath(aimodel[1])
+        # test = Predict(request.POST['inputFilePath'], request.POST['outputFilePath'], json, weight)
+        # result = test.run()
 
-        realgc = ResultGraph(result[0][0], result[0][1])
-        indexs, scripts = realgc.Create()
+        # realgc = ResultGraph(result[0][0], result[0][1])
+        # indexs, scripts = realgc.Create()
 
-        testgc = ResultGraph(result[1][0], result[1][1])
-        testin, testsc = testgc.Create()
+        # testgc = ResultGraph(result[1][0], result[1][1])
+        # testin, testsc = testgc.Create()
 
-        contexts = { 'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
+        # contexts = { 'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
 
         return render(request, self.template_name, contexts)
     

@@ -26,7 +26,7 @@ function displayResize() {
     //     if (max_height < item.height.baseVal.value) { max_height = item.height.baseVal.value; }
     // });
 
-    var max_width = window.innerWidth - 250;
+    var max_width = window.innerWidth * 0.7;
 
     var graphDiv = document.getElementsByClassName('plotly-graph-div');
 
