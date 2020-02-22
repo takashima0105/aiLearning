@@ -1,0 +1,40 @@
+import numpy as np
+from django.core.files.storage import default_storage as ds
+import plotly.offline as plt   # オフライン用
+import plotly.graph_objs as go
+import os.path as path
+
+
+class ResultGraph():
+
+    def __init__(self, input, output):
+        self.input = input
+        self.output = output
+
+    def Create(self):
+        indexList = []
+        scriptlist = []
+        for index in range(input.shape[1]):
+
+            trace = go.Scatter(
+                        x=inpu[:, index],
+                        y=output,
+                        name='ThisTeacherData',
+                        mode='markers',
+                        marker=dict(size=10, color='rgb(255, 0, 255)'))
+
+            layout = go.Layout(
+                        title='ThisTeacherDataGraph',
+                        xaxis=dict(title=('FitureValue-' + str(index))),
+                        yaxis=dict(title='OutputValue'),
+                        height=450,
+                        showlegend=True)
+
+            data = [trace]
+            fig = dict(data=data, layout=layout)
+            indexList.append((index, '特徴量：' + str(index)))
+
+            # オフラインでプロット
+            scriptlist.append(plt.plot(fig, output_type='div'))
+
+        return indexList, scriptlist

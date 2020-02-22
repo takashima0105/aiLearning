@@ -62,25 +62,30 @@ class Predict():
         #                         )
 
         #inputdata, outputdata = data
-        pred_y = model.predict(data[0])
+        pred_y = model.predict(data[0]) #最後に再度実行
+
+        real = data[0], data[1]
+        prediction = data[0],pred_y
+
+        future = real, prediction
 
         # 二乗平方根で誤差を算出
-        mse = mean_squared_error(data[1], pred_y)
+        # mse = mean_squared_error(data[1], pred_y)
 
-        # 可視化
-        df = pd.DataFrame(pred_y, columns=['pred'])
-        df['act'] = pd.DataFrame(data[1])
-        fig, ax = plt.subplots(figsize=(15,4))
-        ax.plot(df['pred'], label='pred')
-        ax.plot(df['act'], label='act')
-        ax.legend()
-        fig.savefig(os.path.join(LOG_DIR, PREDICT_FILE))
+        # # 可視化
+        # df = pd.DataFrame(pred_y, columns=['pred'])
+        # df['act'] = pd.DataFrame(data[1])
+        # fig, ax = plt.subplots(figsize=(15,4))
+        # ax.plot(df['pred'], label='pred')
+        # ax.plot(df['act'], label='act')
+        # ax.legend()
+        # fig.savefig(os.path.join(LOG_DIR, PREDICT_FILE))
 
-        return mse
+        return future
 
 class kickoff():
 
-    def __init__(self):
+    def __init__(self, testData, resultData, jsonfile, weightfile):
         self.testData = testDataPath
         self.resultData = resultDataPath
         self.jsonfile = jsonfile
