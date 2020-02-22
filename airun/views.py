@@ -70,10 +70,11 @@ class DataUpload(generic.FormView):
 # ------------------------------------------------------------------------------------
 #予測テスト
 class TestStart(generic.FormView):
-    page = 'airun/test.html'
-    pathform_class = UploadDataForm
+    template_name = 'airun/test.html'
+    form_class = UploadDataForm
 
     def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES or None)
         # form = self.pathform_class(request.POST)
         # if form.is_valid():
         #     for file in form.files:
@@ -83,8 +84,15 @@ class TestStart(generic.FormView):
         #             form = self.form_class(initial=self.initial)
         #             contexts = {'form':form, 'message':message}
         #             return render(request, self.template_name, contexts)
+        contexts = {'inputData':request.POST['inputFilePath'],
+                    'outputData':request.POST['outputFilePath'],
+                    'epoch':request.POST['epoch'],
+                    'batchSize':request.POST['batchSize'],
+                    'hiddenLayer':request.POST['hiddenLayer'],
+                    'node':request.POST['node'],
+                    'testSize':request.POST['testSize']}
 
-        predict = Prediction(request.POST['inputFilePath'], request.POST['outputFilePath'], request.POST['epoch'])
+        predict = Prediction(contexts)
         aimodel = predict.main()
         json = os.path.abspath(aimodel[0])
         weight = os.path.abspath(aimodel[1])
@@ -99,6 +107,6 @@ class TestStart(generic.FormView):
 
         contexts = { 'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
 
-        return render(request, self.page, contexts)
+        return render(request, self.template_name, contexts)
     
 # Create your views here.

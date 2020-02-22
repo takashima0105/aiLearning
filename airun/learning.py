@@ -13,11 +13,11 @@ class Method():
     def __init__(self, contexts):
         self.inputDataPath = contexts['inputData']
         self.outputDataPath = contexts['outputData']
-        self.epoch = contexts['epoch']
-        self.batchSize = contexts['batchSize']
-        self.hiddenLayer = contexts['hiddenLayer']
-        self.node = contexts['node']
-        self.testSize = contexts['testSize']
+        self.epoch = int(contexts['epoch'])
+        self.batchSize = int(contexts['batchSize'])
+        self.hiddenLayer = int(contexts['hiddenLayer'])
+        self.node = int(contexts['node'])
+        self.testSize = int(contexts['testSize'])
 
         # MODEL保存用パス
         self.MODELDIR = './aiLearning/result/model'
@@ -26,13 +26,13 @@ class Method():
 
     def create_datasets_and_labels(self, test_size):
         # DataSetの読み込み
-        inputData = np.loadtxt('/Users/yusuke/Desktop/AI/aiLearning/aiLearning' + self.inputDataPath,  # 読み込みたいファイルのパス
+        inputData = np.loadtxt('./aiLearning' + self.inputDataPath,  # 読み込みたいファイルのパス
                                delimiter=",",       # ファイルの区切り文字
                                skiprows=0,          # 先頭の何行を無視するか
                                dtype=np.float32
                                )
 
-        outputData = np.loadtxt('/Users/yusuke/Desktop/AI/aiLearning/aiLearning' + self.outputDataPath,  # 読み込みたいファイルのパス
+        outputData = np.loadtxt('./aiLearning' + self.outputDataPath,  # 読み込みたいファイルのパス
                                 delimiter=",",        # ファイルの区切り文字
                                 skiprows=0,           # 先頭の何行を無視するか
                                 dtype=np.float32
@@ -62,11 +62,11 @@ class Method():
         # 隠れ層を作成
         for n in range(self.hiddenLayer):
             if n == 0:
-                model.add(Dense(self.node, input_dim=train_x.shape[1]), name=('dense' + (n + 1)))
-                model.add(Activation('relu', name=('relu' + (n + 1))))
+                model.add(Dense(self.node, input_dim=train_x.shape[1], name=('dense' + str((n + 1)))))
+                model.add(Activation('relu', name=('relu' + str((n + 1)))))
             else:
-                model.add(Dense(self.node, name=('dense' + (n + 1))))
-                model.add(Activation('relu', name=('relu' + (n + 1))))
+                model.add(Dense(self.node, name=('dense' + str((n + 1)))))
+                model.add(Activation('relu', name=('relu' + str((n + 1)))))
 
         # model.add(Dense(20, input_dim=train_x.shape[1], name='dense1'))
         # model.add(Activation('relu', name='relu1'))
@@ -78,7 +78,7 @@ class Method():
         # # model.add(Dropout(0.2, name='dropout2'))
 
         # 出力層を定義
-        model.add(Dense(train_y.shape[1], name='dense3'))
+        model.add(Dense(train_y.shape[1], name='outputLayer'))
         # model.add(Activation('softmax', name='softmax1'))
 
         # モデルコンパイル
@@ -136,7 +136,7 @@ class Prediction():
     def main(self):
 
         # 関数クラスのインスタンス作成
-        m = Method(contexts)
+        m = Method(self.contexts)
 
         # 教師データ、テストデータの読み込み
         data = m.create_datasets_and_labels(0.2)
