@@ -15,6 +15,10 @@ class TeacherDataForm(forms.Form):
 
 class UploadDataForm(forms.Form):
     epoch = forms.IntegerField(max_value=10000, min_value=1)
+    batchSize = forms.IntegerField()
+    hiddenLayer = forms.IntegerField(max_value=10, min_value=1)
+    node = forms.IntegerField(max_value=1000, min_value=1)
+    testSize = forms.IntegerField(max_value=100, min_value=1)
     inputFilePath = forms.CharField()
     outputFilePath = forms.CharField()
 

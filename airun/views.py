@@ -1,5 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.forms.widgets import NumberInput
 from django.views import generic
 from .forms import TeacherDataForm, UploadDataForm
 from django.urls import reverse
@@ -27,7 +29,6 @@ class DataUpload(generic.FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES or None)
-        next_form = AIPredictForm
         if form.is_valid():
             for file in form.files:
                 root, ext = os.path.splitext(form.files[file].name)
@@ -38,13 +39,22 @@ class DataUpload(generic.FormView):
                     return render(request, self.template_name, contexts)
 
             obj = form.save()
+            
+            gc = GraphCreate(obj[0], obj[1])
+            indexs, scripts, datanum = gc.Create()
             pathform = self.pathform_class(initial={
                 'epoch':100,
+                'batchSize':datanum,
+                'hiddenLayer':3,
+                'node':100,
+                'testSize':30,
                 'inputFilePath':obj[0],
                 'outputFilePath':obj[1]
             })
-            gc = GraphCreate(obj[0], obj[1])
-            indexs, scripts = gc.Create()
+
+            pathform.fields['batchSize'].validators.append(MaxValueValidator(datanum))
+            pathform.fields['batchSize'].validators.append(MinValueValidator(1))
+            pathform.fields['batchSize'].widget = NumberInput(attrs={'max':datanum, 'min':1})
 
             contexts = {'form':pathform, 'obj':obj , 'indexs':indexs, 'scripts':scripts}
             return render(request, self.template_name, contexts)
@@ -56,25 +66,6 @@ class DataUpload(generic.FormView):
             # formset.initial = {'json': json, 'weight': weight}
             # contexts = {'form':formset}
             # return render(request, self.test_name,contexts)
-# ------------------------------------------------------------------------------------
-
-#アップロードファイルの確認
-class DataVerification(generic.DetailView):
-    template_name = 'airun/verification.html'
-    main_name = 'airun/main.html'
-    form_class = TeacherDataForm
-    
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES or None)
-        if form.is_valid():
-            obj = form.save()
-            contexts = {'form':form}
-            return render(request, self.template_name)
-        else:
-            inputtext = "Upload Failure"
-            outputtext = "Upload Failure"
-            contexts = {'inputtext':inputtext, 'outputtext':outputtext, 'form':form}
-            return render(request, self.main_name, contexts)
 # ------------------------------------------------------------------------------------
 #予測テスト
 class TestStart(generic.FormView):

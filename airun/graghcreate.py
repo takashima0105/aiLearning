@@ -49,4 +49,4 @@ class GraphCreate():
             # オフラインでプロット
             scriptlist.append(plt.plot(fig, output_type='div'))
 
-        return indexList, scriptlist
+        return indexList, scriptlist, len(inputData)

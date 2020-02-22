@@ -1,20 +1,23 @@
 
 import numpy as np
 from keras.models import Sequential
+from keras.layers import Dense, Activation, Dropout, Flatten
+from keras import optimizers
 import pathlib
 
 MODEL_FILE = 'model.json'
 WEIGHT_FILE = 'weights.hdf5'
 LOG_DIR = './log'
 
-BATCH_SIZE = 10
-
-
 class Method():
-    def __init__(self, inputDataPath, outputDataPath, epoch):
-        self.inputDataPath = inputDataPath
-        self.outputDataPath = outputDataPath
-        self.epoch = epoch
+    def __init__(self, contexts):
+        self.inputDataPath = contexts['inputData']
+        self.outputDataPath = contexts['outputData']
+        self.epoch = contexts['epoch']
+        self.batchSize = contexts['batchSize']
+        self.hiddenLayer = contexts['hiddenLayer']
+        self.node = contexts['node']
+        self.testSize = contexts['testSize']
 
         # MODEL保存用パス
         self.MODELDIR = './aiLearning/result/model'
@@ -43,8 +46,8 @@ class Method():
         outputData = originalData[:, :1]
 
         # 教師データと判定データにわける
-        input_testing_size = int(test_size*len(inputData))
-        output_testing_size = int(test_size*len(outputData))
+        input_testing_size = int((self.testSize/100)*len(inputData))
+        output_testing_size = int((self.testSize/100)*len(outputData))
 
         train_x = inputData[:][:(-input_testing_size)]
         test_x = inputData[:][(-input_testing_size):]
@@ -56,15 +59,23 @@ class Method():
     def model_create(self, train_x, train_y):
         model = Sequential()
 
-        # 隠れ層１を作成
-        model.add(Dense(20, input_dim=train_x.shape[1], name='dense1'))
-        model.add(Activation('relu', name='relu1'))
-        # model.add(Dropout(0.2, name='dropout1'))
+        # 隠れ層を作成
+        for n in range(self.hiddenLayer):
+            if n == 0:
+                model.add(Dense(self.node, input_dim=train_x.shape[1]), name=('dense' + (n + 1)))
+                model.add(Activation('relu', name=('relu' + (n + 1))))
+            else:
+                model.add(Dense(self.node, name=('dense' + (n + 1))))
+                model.add(Activation('relu', name=('relu' + (n + 1))))
 
-        # 隠れ層２を作成
-        model.add(Dense(20, name='dense2'))
-        model.add(Activation('relu', name='relu2'))
-        # model.add(Dropout(0.2, name='dropout2'))
+        # model.add(Dense(20, input_dim=train_x.shape[1], name='dense1'))
+        # model.add(Activation('relu', name='relu1'))
+        # # model.add(Dropout(0.2, name='dropout1'))
+
+        # # 隠れ層２を作成
+        # model.add(Dense(20, name='dense2'))
+        # model.add(Activation('relu', name='relu2'))
+        # # model.add(Dropout(0.2, name='dropout2'))
 
         # 出力層を定義
         model.add(Dense(train_y.shape[1], name='dense3'))
@@ -73,7 +84,7 @@ class Method():
         # モデルコンパイル
         model.compile(loss='mean_squared_error',
                       optimizer='adam',
-                      metrics=['accuracy'])
+                      metrics=['acc'])
         model.summary()
 
         return model
@@ -106,7 +117,7 @@ class Method():
 
         history = model.fit(train_x,
                             train_y,
-                            batch_size=BATCH_SIZE,
+                            batch_size=self.batchSize,
                             epochs=self.epoch,
                             verbose=1,
                             validation_data=(test_x, test_y))
@@ -118,16 +129,14 @@ class Method():
 
 
 class Prediction():
-
-    def __init__(self, inputDataPath, outputDataPath, epoch):
-        self.inputData = inputDataPath
-        self.outputData = outputDataPath
-        self.epoch = epoch
+    
+    def __init__(self, contexts):
+        self.contexts = contexts
 
     def main(self):
 
         # 関数クラスのインスタンス作成
-        m = Method(self.inputData, self.outputData, self.epoch)
+        m = Method(contexts)
 
         # 教師データ、テストデータの読み込み
         data = m.create_datasets_and_labels(0.2)
