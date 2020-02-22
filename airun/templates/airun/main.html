@@ -90,7 +90,7 @@
 {% endautoescape %}
 
 
-<form method="POST" enctype="multipart/form-data" action="">
+<form method="POST" enctype="multipart/form-data" action="{% url 'airun:TestStart' %}">>
   {% csrf_token %}
   <div class="row">
     <div class="col-auto">

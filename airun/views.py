@@ -10,13 +10,14 @@ from django.contrib.auth.decorators import login_required#if no athuentication, 
 import os
 from .forms import AIPredictForm
 from .prediction import Predict
+from .prediction import kickoff
+
 
 # ------------------------------------------------------------------------------------
 #学習実効画面の表示 & ファイルアップロード処理
 class DataUpload(generic.FormView):
 
     template_name = 'airun/main.html'
-    test_name = 'airun/test.html'
     form_class = TeacherDataForm
     pathform_class = UploadDataForm
 
@@ -27,7 +28,6 @@ class DataUpload(generic.FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES or None)
-        next_form = AIPredictForm
         if form.is_valid():
             for file in form.files:
                 root, ext = os.path.splitext(form.files[file].name)
@@ -75,26 +75,37 @@ class DataVerification(generic.DetailView):
             outputtext = "Upload Failure"
             contexts = {'inputtext':inputtext, 'outputtext':outputtext, 'form':form}
             return render(request, self.main_name, contexts)
-# ------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
 #予測テスト
 class TestStart(generic.FormView):
-    form_data = AIPredictForm
     page = 'airun/test.html'
+    pathform_class = UploadDataForm
 
     def post(self, request, *args, **kwargs):
-        form = self.form_data(request.POST, request.FILES or None)
-        # for file in form.files:
+        # form = self.pathform_class(request.POST)
+        # if form.is_valid():
+        #     for file in form.files:
         #         root, ext = os.path.splitext(form.files[file].name)
         #         if ext != '.csv':
         #             message = 'csvファイルをアップロードしてください。'
-        #             form = self.form_data(initial=self.initial)
+        #             form = self.form_class(initial=self.initial)
         #             contexts = {'form':form, 'message':message}
         #             return render(request, self.template_name, contexts)
-        
-        obj = form
-        test = Predict(obj.testdata, obj.resultdata, obj.json, obj.weight)
+
+        predict = Prediction(request.POST['inputFilePath'], request.POST['outputFilePath'], request.POST['epoch'])
+        aimodel = predict.main()
+        json = os.path.abspath(aimodel[0])
+        weight = os.path.abspath(aimodel[1])
+        test = Predict(request.POST['inputFilePath'], request.POST['outputFilePath'], json, weight)
         result = test.run()
-        contexts = {'fomm':result}
+
+        realgc = ResultGraph(result[0][0], result[0][1])
+        indexs, scripts = realgc.Create()
+
+        testgc = ResultGraph(result[1][0], result[1][1])
+        testin, testsc = testgc.Create()
+
+        contexts = { 'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
 
         return render(request, self.page, contexts)
     

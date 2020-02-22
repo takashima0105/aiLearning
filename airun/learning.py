@@ -23,13 +23,13 @@ class Method():
 
     def create_datasets_and_labels(self, test_size):
         # DataSetの読み込み
-        inputData = np.loadtxt(self.inputDataPath,  # 読み込みたいファイルのパス
+        inputData = np.loadtxt('/Users/yusuke/Desktop/AI/aiLearning/aiLearning' + self.inputDataPath,  # 読み込みたいファイルのパス
                                delimiter=",",       # ファイルの区切り文字
                                skiprows=0,          # 先頭の何行を無視するか
                                dtype=np.float32
                                )
 
-        outputData = np.loadtxt(self.outputDataPath,  # 読み込みたいファイルのパス
+        outputData = np.loadtxt('/Users/yusuke/Desktop/AI/aiLearning/aiLearning' + self.outputDataPath,  # 読み込みたいファイルのパス
                                 delimiter=",",        # ファイルの区切り文字
                                 skiprows=0,           # 先頭の何行を無視するか
                                 dtype=np.float32
