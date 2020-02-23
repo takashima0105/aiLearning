@@ -2,6 +2,7 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block title %}学習実効画面{% endblock title %}
+
 {% block content %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
@@ -13,52 +14,6 @@
       <h2 class="mt-1 border-bottom">回帰問題の学習</h2>
     </div>
   </div>
-{% if not obj %}
-  <div class="row">
-    <div class="col-auto">
-      <h4 class="mt-2 border-bottom">学習データの選択</h4>
-    </div>
-    </div>
-  </div>
-  <form method="POST" enctype="multipart/form-data" action="{% url 'airun:DataUpload' %}">
-  <div class="container">
-    <div class="row mb-5">
-      <div class="col-6">
-        <h4 class="mt-4 border-bottom">InputData</h4>
-        {% csrf_token %}
-        {{ form.inputFile |add_class:'w-100 btn-sm btn-info' }}
-      </div>
-      <div class="col-6">
-        <h4 class="mt-4 border-bottom">OutputData</h4>
-          {{ form.outputFile |add_class:'w-100 btn-sm btn-info' }}
-      </div>
-    </div>
-    {% comment %} <div class="row">
-      <div class="col-auto">
-        <h5 class="border-bottom">各種係数設定</h5>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-auto">
-        <label class="border-bottom">学習回数: {{ form.epoch }}</label>
-      </div>
-    </div> {% endcomment %}
-  {% if message %}
-    <div class="row mb-3">
-      <div class="col-auto card-body alert alert-info alert-dismissible">
-        <strong>{{ message }}</strong>
-      </div>
-    </div>
-  {% endif %}
-    <div class="row mb-3">
-      <div class="col-2">
-        <button type="submit" class="btn-sm btn-dark">アップロード</button>
-      </div>
-    </div>
-  </form>
-{% endif %}
-
-{% if obj %}
 
 <ul class="nav nav-pills">
   {% for i in indexs %}
@@ -87,15 +42,16 @@
       {% endif %}
     {% endfor %}
   </div>
+{% endautoescape %}
   <ul class="nav nav-pills">
     {% for i in testin %}
       {% if forloop.counter == 1  %}
         <li class="nav-item">
-          <button type="button" class="nav-link active" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+          <button type="button" class="nav-link active" data-toggle="tab" href="#content2{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
         </li>
       {% else %}
         <li class="nav-item">
-          <button type="button" class="nav-link" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+          <button type="button" class="nav-link" data-toggle="tab" href="#content2{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
         </li>
       {% endif %}    
     {% endfor %}
@@ -104,21 +60,17 @@
     <div class="tab-content" id="graphcontent">
       {% for s in testsc %}
         {% if forloop.counter == 1  %}
-          <div class="tab-pane fade show active" id="content{{ forloop.counter }}">
+          <div class="tab-pane fade show active" id="content2{{ forloop.counter }}">
             {{ s }}
           </div>
         {% else %}
-          <div class="tab-pane fade" id="content{{ forloop.counter }}">
+          <div class="tab-pane fade" id="content2{{ forloop.counter }}">
             {{ s }}
           </div>
         {% endif %}
       {% endfor %}
     </div>
 {% endautoescape %}
-
-
-
-{% endif %}
 
 
 {% endblock content %}

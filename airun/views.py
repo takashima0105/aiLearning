@@ -10,9 +10,9 @@ from .graghcreate import GraphCreate
 import sys
 from django.contrib.auth.decorators import login_required#if no athuentication, execute redirect
 import os
-from .forms import AIPredictForm
 from .prediction import Predict
-from .prediction import kickoff
+from .prediction import Kickoff
+from .resultdata import ResultGraph
 
 
 # ------------------------------------------------------------------------------------
@@ -59,31 +59,15 @@ class DataUpload(generic.FormView):
 
             contexts = {'form':pathform, 'obj':obj , 'indexs':indexs, 'scripts':scripts}
             return render(request, self.template_name, contexts)
-            # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
-            # aimodel = predict.main()
-            # json = os.path.abspath(aimodel[0])
-            # weight = os.path.abspath(aimodel[1])
-            # formset = next_form(initial=self.initial)
-            # formset.initial = {'json': json, 'weight': weight}
-            # contexts = {'form':formset}
-            # return render(request, self.test_name,contexts)
 # ------------------------------------------------------------------------------------
-#予測テスト
+#AIの作成と予測の実行
 class TestStart(generic.FormView):
-    template_name = 'airun/test.html'
+    template_name = 'airun/test.html' 
     form_class = UploadDataForm
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES or None)
-        # form = self.pathform_class(request.POST)
-        # if form.is_valid():
-        #     for file in form.files:
-        #         root, ext = os.path.splitext(form.files[file].name)
-        #         if ext != '.csv':
-        #             message = 'csvファイルをアップロードしてください。'
-        #             form = self.form_class(initial=self.initial)
-        #             contexts = {'form':form, 'message':message}
-        #             return render(request, self.template_name, contexts)
+        
+        #フォームデータを取得
         contexts = {'inputData':request.POST['inputFilePath'],
                     'outputData':request.POST['outputFilePath'],
                     'epoch':request.POST['epoch'],
@@ -92,20 +76,33 @@ class TestStart(generic.FormView):
                     'node':request.POST['node'],
                     'testSize':request.POST['testSize']}
 
+        #学習のためのインスタンス作成
         predict = Prediction(contexts)
+
+        #学習開始、モデルファイルと重みファイルを作成
         aimodel = predict.main()
+
+        #モデルファイルのパスを取得
         json = os.path.abspath(aimodel[0])
+        
+        #重みファイルのパスを取得
         weight = os.path.abspath(aimodel[1])
-        test = Predict(request.POST['inputFilePath'], request.POST['outputFilePath'], json, weight)
+
+        #予測のためのインスタンス作成
+        test = Kickoff(request.POST['inputFilePath'], request.POST['outputFilePath'], json, weight)
+        
+        #予測実行、実際の値と予測値を２次元配列で出力
         result = test.run()
 
+        #学習データのグラフ作成
         realgc = ResultGraph(result[0][0], result[0][1])
         indexs, scripts = realgc.Create()
 
+        #予測結果のグラフ作成
         testgc = ResultGraph(result[1][0], result[1][1])
         testin, testsc = testgc.Create()
 
-        contexts = { 'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
+        contexts = {'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
 
         return render(request, self.template_name, contexts)
     

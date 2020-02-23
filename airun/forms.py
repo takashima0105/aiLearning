@@ -22,9 +22,4 @@ class UploadDataForm(forms.Form):
     inputFilePath = forms.CharField()
     outputFilePath = forms.CharField()
 
-class AIPredictForm(forms.Form):
-    testdata = forms.FileField()
-    resultdata = forms.FileField()
-    json = forms.CharField(label='json')
-    weight = forms.CharField(label='weight')
          

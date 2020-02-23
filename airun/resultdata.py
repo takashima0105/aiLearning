@@ -7,18 +7,18 @@ import os.path as path
 
 class ResultGraph():
 
-    def __init__(self, input, output):
-        self.input = input
-        self.output = output
+    def __init__(self, inputdata, outputdata):
+        self.input = inputdata
+        self.output = outputdata
 
     def Create(self):
         indexList = []
         scriptlist = []
-        for index in range(input.shape[1]):
+        for index in range(self.input.shape[1]):
 
             trace = go.Scatter(
-                        x=inpu[:, index],
-                        y=output,
+                        x=self.input[:, index],
+                        y=self.output,
                         name='ThisTeacherData',
                         mode='markers',
                         marker=dict(size=10, color='rgb(255, 0, 255)'))
