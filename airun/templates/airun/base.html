@@ -10,7 +10,7 @@
 {% block extra_css %}{% endblock %}
 <title>{% block title %}Test{% endblock %}</title>
 </head>
-<body>
+<body class="bg-light">
   <nav class="navbar navbar-expand-md  navbar-light" style="background-color:#138496;">
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#bs-navi" aria-controls="bs-navi" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -33,11 +33,9 @@
       </ul>
     </div>
   </nav>
-  <div class="container">
     {% block content %}
       {{ content }}
     {% endblock %}
-  </div>
 {% block extra_js %}{% endblock %}
 </body>
 </html>

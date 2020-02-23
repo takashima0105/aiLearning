@@ -39,6 +39,7 @@ class GraphCreate():
                         title='ThisTeacherDataGraph',
                         xaxis=dict(title=('FitureValue-' + str(index))),
                         yaxis=dict(title='OutputValue'),
+                        paper_bgcolor='rgba(0,0,0,0)',
                         height=450,
                         showlegend=True)
 
@@ -47,6 +48,6 @@ class GraphCreate():
             indexList.append((index, '特徴量：' + str(index)))
 
             # オフラインでプロット
-            scriptlist.append(plt.plot(fig, output_type='div'))
+            scriptlist.append(plt.plot(fig, output_type='div', config={'displayModeBar':False}))
 
         return indexList, scriptlist, len(inputData)

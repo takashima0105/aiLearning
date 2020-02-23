@@ -4,27 +4,24 @@
 {% block title %}学習実効画面{% endblock title %}
 {% block content %}
 
-<script src="{% static 'airun/js/chart.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'airun/css/loading.css' %}">
 
 <div class="container">
-  <div class="row align-items-center" style="height:100px">
+  <div class="row" style="height:100px">
     <div class="col-auto">
       <h2 class="mt-1 border-bottom">回帰問題の学習</h2>
     </div>
   </div>
-{% if not obj %}
   <div class="row">
     <div class="col-auto">
       <h4 class="mt-2 border-bottom">学習データの選択</h4>
     </div>
-    </div>
   </div>
-  <form method="POST" enctype="multipart/form-data" action="{% url 'airun:DataUpload' %}">
-  <div class="container">
+  <form method="POST" id="upload_and_chartcreate" action="{% url 'airun:ChartCreate' %}">
+    {% csrf_token %}
     <div class="row mb-5">
       <div class="col-6">
         <h4 class="mt-4 border-bottom">InputData</h4>
-        {% csrf_token %}
         {{ form.inputFile |add_class:'w-100 btn-sm btn-info' }}
       </div>
       <div class="col-6">
@@ -32,104 +29,31 @@
           {{ form.outputFile |add_class:'w-100 btn-sm btn-info' }}
       </div>
     </div>
-    {% comment %} <div class="row">
+    {% if message %}
+      <div class="row mb-3">
+        <div class="col-auto card-body alert alert-info alert-dismissible">
+          <strong>{{ message }}</strong>
+        </div>
+      </div>
+    {% endif %}
+    <div class="row mb-5">
       <div class="col-auto">
-        <h5 class="border-bottom">各種係数設定</h5>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-auto">
-        <label class="border-bottom">学習回数: {{ form.epoch }}</label>
-      </div>
-    </div> {% endcomment %}
-  {% if message %}
-    <div class="row mb-3">
-      <div class="col-auto card-body alert alert-info alert-dismissible">
-        <strong>{{ message }}</strong>
-      </div>
-    </div>
-  {% endif %}
-    <div class="row mb-3">
-      <div class="col-2">
-        <button type="submit" class="btn-sm btn-dark">アップロード</button>
+        <button type="submit" class="btn-sm btn-info">アップロード&amp;グラフ作成</button>
       </div>
     </div>
   </form>
-{% endif %}
 
-{% if obj %}
+    <script src="{% static 'airun/js/ajax.js' %}"></script>
 
-<ul class="nav nav-pills">
-  {% for i in indexs %}
-    {% if forloop.counter == 1  %}
-      <li class="nav-item">
-        <button type="button" class="nav-link active" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
-      </li>
-    {% else %}
-      <li class="nav-item">
-        <button type="button" class="nav-link" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
-      </li>
-    {% endif %}    
-  {% endfor %}
-</ul>
-{% autoescape off %}
-  <div class="tab-content" id="graphcontent">
-    {% for s in scripts %}
-      {% if forloop.counter == 1  %}
-        <div class="tab-pane fade show active" id="content{{ forloop.counter }}">
-          {{ s }}
-        </div>
-      {% else %}
-        <div class="tab-pane fade" id="content{{ forloop.counter }}">
-          {{ s }}
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-{% endautoescape %}
-
-
-<form method="POST" enctype="multipart/form-data" action="{% url 'airun:TestStart' %}">>
-  {% csrf_token %}
-  <div class="row">
-    <div class="col-auto">
-      <h5 class="border-bottom">各種係数設定</h5>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-auto">
-      <label class="border-bottom">学習回数: {{ form.epoch }}回</label>
-    </div>
-    <div class='col-auto'>
-      <label class="border-bottom">バッチ数: {{ form.batchSize }}個</label>
-    </div>
-    <div class='col-auto'>
-      <label class="border-bottom">隠れ層数: {{ form.hiddenLayer }}個</label>
-    </div>
-    <div class='col-auto'>
-      <label class="border-bottom">各隠れ層のノード数: {{ form.node }}個</label>
-    </div>
-    <div class='col-auto'>
-      <label class="border-bottom">テストデータサイズ： {{ form.testSize }}％</label>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-auto">
-      {{ form.inputFilePath.as_hidden }}
-      {{ form.outputFilePath.as_hidden }}
-      <button type="submit" class="btn btn-info btn-sm">学習実行</button>
-    </div>
-  </div>
-</form>
-<div class="row mb-3">
-  <div class="col-auto">
-    <form method="GET" enctype="multipart/form-data" action="{% url 'airun:DataUpload' %}">
-      <button type="submit" class="btn btn-danger btn-sm">戻る</button>
-    </form>
-  </div>
+    <tbody>
+      <div id="chart_and_run">{% include 'airun/chart.html' %}</div>
+    </tbody>
 </div>
 
-{% endif %}
-
+<div id="overlay"> 
+  <div class="cv-spinner">
+      <span class="spinner"></span>
+  </div>
+</div>
 
 {% endblock content %}

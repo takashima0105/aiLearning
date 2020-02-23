@@ -59,6 +59,42 @@ class DataUpload(generic.FormView):
 
             contexts = {'form':pathform, 'obj':obj , 'indexs':indexs, 'scripts':scripts}
             return render(request, self.template_name, contexts)
+            # predict = Prediction(obj.inputFile.path, obj.outputFile.path, obj.epoch)
+            # aimodel = predict.main()
+            # json = os.path.abspath(aimodel[0])
+            # weight = os.path.abspath(aimodel[1])
+            # formset = next_form(initial=self.initial)
+            # formset.initial = {'json': json, 'weight': weight}
+            # contexts = {'form':formset}
+            # return render(request, self.test_name,contexts)
+
+def chart_create(request):
+    
+    form_class = TeacherDataForm
+    form = form_class(request.POST, request.FILES or None)
+    pathform_class = UploadDataForm
+
+    if form.is_valid():
+        obj = form.save()
+        gc = GraphCreate(obj[0], obj[1])
+        indexs, scripts, datanum = gc.Create()
+        pathform = pathform_class(initial={
+            'epoch':100,
+            'batchSize':datanum,
+            'hiddenLayer':3,
+            'node':100,
+            'testSize':30,
+            'inputFilePath':obj[0],
+            'outputFilePath':obj[1]
+        })
+
+        pathform.fields['batchSize'].validators.append(MaxValueValidator(datanum))
+        pathform.fields['batchSize'].validators.append(MinValueValidator(1))
+        pathform.fields['batchSize'].widget = NumberInput(attrs={'max':datanum, 'min':1})
+
+        contexts = {'form':pathform, 'obj':obj , 'indexs':indexs, 'scripts':scripts}
+        return render(request, 'airun/chart.html', contexts)
+
 # ------------------------------------------------------------------------------------
 #AIの作成と予測の実行
 class TestStart(generic.FormView):
@@ -66,8 +102,17 @@ class TestStart(generic.FormView):
     form_class = UploadDataForm
 
     def post(self, request, *args, **kwargs):
-        
-        #フォームデータを取得
+        form = self.form_class(request.POST, request.FILES or None)
+        # form = self.pathform_class(request.POST)
+        # if form.is_valid():
+        #     for file in form.files:
+        #         root, ext = os.path.splitext(form.files[file].name)
+        #         if ext != '.csv':
+        #             message = 'csvファイルをアップロードしてください。'
+        #             form = self.form_class(initial=self.initial)
+        #             contexts = {'form':form, 'message':message}
+        #             return render(request, self.template_name, contexts)
+
         contexts = {'inputData':request.POST['inputFilePath'],
                     'outputData':request.POST['outputFilePath'],
                     'epoch':request.POST['epoch'],
