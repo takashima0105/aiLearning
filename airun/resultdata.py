@@ -7,9 +7,10 @@ import os.path as path
 
 class ResultGraph():
 
-    def __init__(self, inputdata, outputdata):
+    def __init__(self, inputdata, outputdata, resultdata):
         self.input = inputdata
         self.output = outputdata
+        self.result = resultdata
 
     def Create(self):
         indexList = []
@@ -21,7 +22,14 @@ class ResultGraph():
                         y=self.output,
                         name='ThisTeacherData',
                         mode='markers',
-                        marker=dict(size=10, color='rgb(255, 0, 255)'))
+                        marker=dict(size=10, color='rgb(0, 134, 255)'))
+            
+            result = go.Scatter(
+                        x=self.input[:, index],
+                        y=self.result,
+                        name='ThisTeacherData',
+                        mode='markers',
+                        marker=dict(size=10, color='rgb(0, 219, 0)')) 
 
             layout = go.Layout(
                         title='ThisTeacherDataGraph',
@@ -30,7 +38,7 @@ class ResultGraph():
                         height=450,
                         showlegend=True)
 
-            data = [trace]
+            data = [trace, result]
             fig = dict(data=data, layout=layout)
             indexList.append((index, '特徴量：' + str(index)))
 

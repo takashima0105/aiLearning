@@ -50,7 +50,7 @@ class Predict():
         #予測結果を２次元配列から１次元配列に変換
         for i in range(pred_y.shape[0]):
             pred_r.append(pred_y[i][0])
-
+        
         #学習データ
         real = data[0], data[1]
         

@@ -43,7 +43,7 @@
     {% endfor %}
   </div>
 {% endautoescape %}
-  <ul class="nav nav-pills">
+  {% comment %} <ul class="nav nav-pills">
     {% for i in testin %}
       {% if forloop.counter == 1  %}
         <li class="nav-item">
@@ -70,7 +70,7 @@
         {% endif %}
       {% endfor %}
     </div>
-{% endautoescape %}
+{% endautoescape %} {% endcomment %}
 
 
 {% endblock content %}

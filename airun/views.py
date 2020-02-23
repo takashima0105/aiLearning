@@ -95,14 +95,10 @@ class TestStart(generic.FormView):
         result = test.run()
 
         #学習データのグラフ作成
-        realgc = ResultGraph(result[0][0], result[0][1])
+        realgc = ResultGraph(result[0][0], result[0][1],result[1][1])
         indexs, scripts = realgc.Create()
 
-        #予測結果のグラフ作成
-        testgc = ResultGraph(result[1][0], result[1][1])
-        testin, testsc = testgc.Create()
-
-        contexts = {'indexs':indexs, 'scripts':scripts, 'testin':testin, 'testsc':testsc}
+        contexts = {'indexs':indexs, 'scripts':scripts}
 
         return render(request, self.template_name, contexts)
     
