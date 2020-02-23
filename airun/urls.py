@@ -10,6 +10,7 @@ urlpatterns = [
     #実効画面
     path('main/', views.DataUpload.as_view(), name='DataUpload'),
     path('test/', views.TestStart.as_view(), name='TestStart'),
+    path('main/chart', views.chart_create, name='ChartCreate'),
 ]
 
 if settings.DEBUG:

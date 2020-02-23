@@ -1,0 +1,76 @@
+{% load static %}
+{% load widget_tweaks %}
+{% if scripts %}
+
+<script src="{% static 'airun/js/chart.js' %}"></script>
+
+<ul class="nav nav-pills">
+{% for i in indexs %}
+    {% if forloop.counter == 1  %}
+    <li class="nav-item">
+        <button type="button" class="nav-link active" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <button type="button" class="nav-link" data-toggle="tab" href="#content{{ forloop.counter }}" onClick="displayResize()">{{ i.1 }}</button>
+    </li>
+    {% endif %}    
+{% endfor %}
+</ul>
+{% autoescape off %}
+<div class="col">
+    <div class="row mb-3">
+    <div class="tab-content mb-1" id="graphcontent">
+        {% for s in scripts %}
+        {% if forloop.counter == 1  %}
+            <div class="tab-pane fade show active" id="content{{ forloop.counter }}">
+            {{ s }}
+            </div>
+        {% else %}
+            <div class="tab-pane fade" id="content{{ forloop.counter }}">
+            {{ s }}
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+</div>
+{% endautoescape %}
+
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'airun:TestStart' %}">
+{% csrf_token %}
+<div class="row">
+    <div class="col-auto">
+    <h5 class="border-bottom">各種係数設定</h5>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-auto bg-light">
+    <label class="border-bottom">学習回数: {{ form.epoch|add_class:'btn-sm btn-info' }}回</label>
+    </div>
+    <div class='col-auto'>
+    <label class="border-bottom">バッチ数: {{ form.batchSize|add_class:'btn-sm btn-info' }}個</label>
+    </div>
+    <div class='col-auto'>
+    <label class="border-bottom">隠れ層数: {{ form.hiddenLayer|add_class:'btn-sm btn-info' }}個</label>
+    </div>
+    <div class='col-auto'>
+    <label class="border-bottom">各隠れ層のノード数: {{ form.node|add_class:'btn-sm btn-info' }}個</label>
+    </div>
+    <div class='col-auto'>
+    <label class="border-bottom">テストデータサイズ： {{ form.testSize |add_class:'btn-sm btn-info'}}％</label>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-auto">
+    {{ form.inputFilePath.as_hidden }}
+    {{ form.outputFilePath.as_hidden }}
+    <button type="submit" class="btn btn-info btn-sm">学習実行</button>
+    </div>
+</div>
+</form>
+
+<script>displayResize();</script>
+
+{% endif %}

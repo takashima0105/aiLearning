@@ -67,6 +67,34 @@ class DataUpload(generic.FormView):
             # formset.initial = {'json': json, 'weight': weight}
             # contexts = {'form':formset}
             # return render(request, self.test_name,contexts)
+
+def chart_create(request):
+    
+    form_class = TeacherDataForm
+    form = form_class(request.POST, request.FILES or None)
+    pathform_class = UploadDataForm
+
+    if form.is_valid():
+        obj = form.save()
+        gc = GraphCreate(obj[0], obj[1])
+        indexs, scripts, datanum = gc.Create()
+        pathform = pathform_class(initial={
+            'epoch':100,
+            'batchSize':datanum,
+            'hiddenLayer':3,
+            'node':100,
+            'testSize':30,
+            'inputFilePath':obj[0],
+            'outputFilePath':obj[1]
+        })
+
+        pathform.fields['batchSize'].validators.append(MaxValueValidator(datanum))
+        pathform.fields['batchSize'].validators.append(MinValueValidator(1))
+        pathform.fields['batchSize'].widget = NumberInput(attrs={'max':datanum, 'min':1})
+
+        contexts = {'form':pathform, 'obj':obj , 'indexs':indexs, 'scripts':scripts}
+        return render(request, 'airun/chart.html', contexts)
+
 # ------------------------------------------------------------------------------------
 #予測テスト
 class TestStart(generic.FormView):

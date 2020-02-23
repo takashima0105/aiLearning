@@ -48,6 +48,6 @@ class GraphCreate():
             indexList.append((index, '特徴量：' + str(index)))
 
             # オフラインでプロット
-            scriptlist.append(plt.plot(fig, output_type='div'))
+            scriptlist.append(plt.plot(fig, output_type='div', config={'displayModeBar':False}))
 
         return indexList, scriptlist, len(inputData)
