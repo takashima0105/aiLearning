@@ -7,26 +7,26 @@
 <link rel="stylesheet" type="text/css" href="{% static 'airun/css/loading.css' %}">
 
 <div class="container">
-  <div class="row" style="height:100px">
+  <div class="row mb-3">
     <div class="col-auto">
       <h2 class="mt-1 border-bottom">回帰問題の学習</h2>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-2">
     <div class="col-auto">
-      <h4 class="mt-2 border-bottom">学習データの選択</h4>
+      <h4 class="border-bottom">学習データの選択</h4>
     </div>
   </div>
   <form method="POST" id="upload_and_chartcreate" action="{% url 'airun:ChartCreate' %}">
     {% csrf_token %}
     <div class="row mb-5">
       <div class="col-6">
-        <h4 class="mt-4 border-bottom">InputData</h4>
-        {{ form.inputFile |add_class:'w-100 btn-sm btn-info' }}
+        <h4 class="border-bottom">InputData</h4>
+        {{ form.inputFile |add_class:'w-100 btn-sm btn-danger' }}
       </div>
       <div class="col-6">
-        <h4 class="mt-4 border-bottom">OutputData</h4>
-          {{ form.outputFile |add_class:'w-100 btn-sm btn-info' }}
+        <h4 class="border-bottom">OutputData</h4>
+          {{ form.outputFile |add_class:'w-100 btn-sm btn-danger' }}
       </div>
     </div>
     {% if message %}

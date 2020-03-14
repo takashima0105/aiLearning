@@ -21,5 +21,3 @@ class UploadDataForm(forms.Form):
     testSize = forms.IntegerField(max_value=100, min_value=1)
     inputFilePath = forms.CharField()
     outputFilePath = forms.CharField()
-
-         

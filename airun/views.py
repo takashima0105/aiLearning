@@ -119,7 +119,8 @@ class TestStart(generic.FormView):
                     'batchSize':request.POST['batchSize'],
                     'hiddenLayer':request.POST['hiddenLayer'],
                     'node':request.POST['node'],
-                    'testSize':request.POST['testSize']}
+                    'testSize':request.POST['testSize']
+                    }
 
         #学習のためのインスタンス作成
         predict = Prediction(contexts)
